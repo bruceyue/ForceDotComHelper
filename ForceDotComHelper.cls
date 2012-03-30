@@ -32,7 +32,7 @@ public class ForceDotComHelper
         return (value != null && value != '');
    	}
 
-	// Gets the sObject describe result for the 'objectName' object
+	// Gets the sObject describe result for the current object
 	public static void describeObject(String objectName)
     {
         Map<String, Schema.DescribeFieldResult> fieldDescribeMap = new Map<String, Schema.DescribeFieldResult>();
@@ -52,23 +52,40 @@ public class ForceDotComHelper
     }
 
 	//  Gets all child objects name
-	//  e.g: Schema.DescribeSObjectResult result = Account.SObjectType.getDescribe();
+	//  e.g: SObject obj = new Account();
 	//  Schema.SObjectType is the data type for an sObject token.
-	public static Set<String> getChildObjects(Schema.DescribeSObjectResult result)
+	public static Set<String> getChildObjects(SObject obj)
 	{
 		Set<String> sObjectNames = new Set<String>();
-		List<Schema.ChildRelationship> childs = result.getChildRelationships();
-		for(Schema.ChildRelationship child : childs)
+		if(obj != null)
 		{
-			sObjectNames.add(String.valueOf(child.getChildSObject()));
-		}
+			Schema.DescribeSObjectResult result = obj.getSObjectType().getDescribe();
+			List<Schema.ChildRelationship> childs = result.getChildRelationships();
+			for(Schema.ChildRelationship child : childs)
+			{
+				sObjectNames.add(String.valueOf(child.getChildSObject()));
+			}
+		}	
 		return sObjectNames;
+	}
+	
+	//Returns the three-character prefix code for the object. 
+	public static String getSobjectIdPrefix(SObject obj)
+	{
+		String prefix = '';
+		if(obj != null)
+		{
+			Schema.DescribeSObjectResult result = obj.getSObjectType().getDescribe();
+			prefix = result.getKeyPrefix();
+		}		
+		return prefix;
 	}
 	
 	// Gets picklist field values, e.g: Schema.Describefieldresult fieldResult = Opportunity.Type.getDescribe();
 	public static List<SelectOption> getPicklistValues(Schema.Describefieldresult fieldResult)
     {
        	List<SelectOption> options = new List<SelectOption>();
+		options.add('', '--None--');
 		List<Schema.PickListEntry> pickListEntries = fieldResult.getPickListValues();       
 		for(Schema.PickListEntry entry : pickListEntries)
 		{
@@ -121,7 +138,7 @@ public class ForceDotComHelper
             }
         }
     }
-
+	
     /*There are two versions of every record Id in salesforce :
 	  15 digit case-sensitive version which is referenced in the UI,
 	  18 digit case-insensitive version which is referenced through the API
@@ -282,5 +299,33 @@ public class ForceDotComHelper
 	        // That's it.	        
 		}   
 		return result;
+    }
+
+	// Function to query any object,// Construct the list of fields
+    // String[] flist  = new List<String>{'Name','Id'};
+	// Call the runquery method to execute the query. Note that the condition has to be passed as an empty string if you do not have any condition
+	// Account[] qresult = runQuery('Account',flist,'');
+	public static List<sObject> runQuery(String objName,String[] fieldNames,String condition)
+    {
+        List<sObject> queryResult;
+        String fieldsList = '';
+        // Generate the fieldsList from the string array
+        if(fieldNames != NULL)
+        {
+            if(fieldNames.size() > 0)
+            {
+                for (Integer i=0; i < fieldNames.size(); i++)
+                {
+                    if( i <= (fieldNames.size() - 2))
+                        fieldsList = fieldsList + fieldNames[i]+',';
+                    else
+                        fieldsList = fieldsList + fieldNames[i];    
+                }
+            }
+        } 
+        // Construct the query string
+        String soqlQuery = 'Select '+fieldsList+' from '+objName+' '+condition;
+        queryResult = Database.query(soqlQuery);
+        return queryResult;               
     }
 }
