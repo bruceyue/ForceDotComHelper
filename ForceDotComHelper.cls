@@ -1,8 +1,5 @@
 /*
- * A helper class for Force.com Application, methods are:
- * 1. forwardEverythingToMe(Messaging.InboundEmail email), return void.
- * 2. sendSimpleEmail(String[] toAddresses, String subject, String body), return void.
- * 3. notNullAndEmpty(String value), return Boolean.
+ * This class aimed to prepare some useful methods for your Force.com Applications.
  */
 public class ForceDotComHelper
 {

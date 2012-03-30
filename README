@@ -1,6 +1,14 @@
-/*
+ *
  * A helper class for Force.com Application, methods are:
  * 1. forwardEverythingToMe(Messaging.InboundEmail email), return void.
  * 2. sendSimpleEmail(String[] toAddresses, String subject, String body), return void.
  * 3. notNullAndEmpty(String value), return Boolean.
- */
+ * 4. describeObject(String objectName) return void.
+ * 5. getChildObjects(Schema.DescribeSObjectResult result), return Set<String>.
+ * 7. getPicklistValues(Schema.Describefieldresult fieldResult), return List<SelectOption>.
+ * 8. getDefaultPicklistValue(SObject obj, Schema.DescribeFieldResult fieldDescribe) , return String.
+ * 9. setRecordType(SObject obj), return void.
+ * 10.convertIdFrom15To18(String Id), return String.
+ * 11.sortMap(Map<String, Integer> oldMap), return List<String>.
+ * 12.convertHtmlToText(String htmlBody), return String.
+ *
