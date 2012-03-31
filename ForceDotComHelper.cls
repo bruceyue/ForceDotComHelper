@@ -54,19 +54,53 @@ public class ForceDotComHelper
 	//  Gets all child objects name
 	//  e.g: SObject obj = new Account();
 	//  Schema.SObjectType is the data type for an sObject token.
-	public static Set<String> getChildObjects(SObject obj)
+	public static List<Schema.SObjectType> getChildObjects(SObject obj)
 	{
-		Set<String> sObjectNames = new Set<String>();
+		List<Schema.SObjectType> sObjectTypes = new List<Schema.SObjectType>();
 		if(obj != null)
 		{
 			Schema.DescribeSObjectResult result = obj.getSObjectType().getDescribe();
 			List<Schema.ChildRelationship> childs = result.getChildRelationships();
 			for(Schema.ChildRelationship child : childs)
 			{
-				sObjectNames.add(String.valueOf(child.getChildSObject()));
+				sObjectTypes.add(child.getChildSObject());
 			}
 		}	
-		return sObjectNames;
+		return sObjectTypes;
+	}
+	
+	public static String getChildQueryRelationShipName(String childObj, String parentObj)
+	{
+		String childRelationName = '';
+		Map<String, Schema.sObjectType> globalDescribe = Schema.getGlobalDescribe();
+		Schema.DescribeSObjectResult results = globalDescribe.get(parentObj).getDescribe();
+		List<Schema.ChildRelationship> childs = results.getChildRelationships();
+		for(Schema.ChildRelationship child : childs)
+		{
+			if(String.valueof(child.getChildSObject()) == childObj)
+			{
+				childRelationName = child.getRelationshipName();
+				break;
+			}				
+		} 
+		return childRelationName;	
+	}
+	
+	//  Returns the name of the relationship.
+	public static Set<String> getRelationshipNames(String obj) //obj = parent object
+	{
+		Set<String> relationshipNames = new Set<String>();
+		if(notNullAndEmpty(obj))
+		{
+			Map<String, Schema.SObjectType> globalDescribe = Schema.getGlobalDescribe();
+			Schema.DescribeSObjectResult results = globalDescribe.get(obj).getDescribe();
+			List<Schema.ChildRelationship> childs = results.getChildRelationships();
+			for(Schema.ChildRelationship child : childs)
+			{
+				relationshipNames.add(child.getRelationshipName());
+			}
+		}
+		return relationshipNames;
 	}
 	
 	//Returns the three-character prefix code for the object. 
@@ -79,6 +113,25 @@ public class ForceDotComHelper
 			prefix = result.getKeyPrefix();
 		}		
 		return prefix;
+	}
+	
+	//Returns the Sobject name from three-character prefix of the object Id. 
+	public static String getSobjectNameFromIdPrefix(String objId)
+	{
+		String objectName = '';
+		if(notNullAndEmpty(objId))
+		{
+			String prefix = objId.subString(0, 3);
+			Map<String, Schema.SObjectType> globalDescribe = Schema.getGlobalDescribe();
+			for(Schema.SObjectType objectInstance : globalDescribe.values())
+			{
+				if(objectInstance.getDescribe().getKeyPrefix() == prefix)
+				{	
+					objectName = objectInstance.getDescribe().getName();
+				}
+			}			
+		}
+		return objectName;	
 	}
 	
 	// Gets picklist field values, e.g: Schema.Describefieldresult fieldResult = Opportunity.Type.getDescribe();
@@ -328,4 +381,10 @@ public class ForceDotComHelper
         queryResult = Database.query(soqlQuery);
         return queryResult;               
     }
+
+	@isTest
+	static void testForceDotComHelper()
+	{
+		ForceDotComHelper helper = new ForceDotComHelper();
+	}
 }
