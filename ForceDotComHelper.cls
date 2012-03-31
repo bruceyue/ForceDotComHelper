@@ -69,6 +69,7 @@ public class ForceDotComHelper
 		return sObjectTypes;
 	}
 	
+	//Account -> Contacts
 	public static String getChildQueryRelationShipName(String childObj, String parentObj)
 	{
 		String childRelationName = '';

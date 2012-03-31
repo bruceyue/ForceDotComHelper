@@ -1,14 +1,22 @@
  *
  * A helper class for Force.com Application, methods are:
+ *
  * 1. forwardEverythingToMe(Messaging.InboundEmail email), return void.
  * 2. sendSimpleEmail(String[] toAddresses, String subject, String body), return void.
  * 3. notNullAndEmpty(String value), return Boolean.
  * 4. describeObject(String objectName) return void.
- * 5. getChildObjects(Schema.DescribeSObjectResult result), return Set<String>.
- * 7. getPicklistValues(Schema.Describefieldresult fieldResult), return List<SelectOption>.
- * 8. getDefaultPicklistValue(SObject obj, Schema.DescribeFieldResult fieldDescribe) , return String.
- * 9. setRecordType(SObject obj), return void.
- * 10.convertIdFrom15To18(String Id), return String.
- * 11.sortMap(Map<String, Integer> oldMap), return List<String>.
- * 12.convertHtmlToText(String htmlBody), return String.
+ * 5. getChildObjects((SObject obj)), return List<Schema.SObjectType>.
+ 
+ * 7. //Gets picklist field values, e.g: Schema.Describefieldresult fieldResult = Opportunity.Type.getDescribe();
+      //getPicklistValues(Schema.Describefieldresult fieldResult), return List<SelectOption>. 
+ * 8.  getDefaultPicklistValue(SObject obj, Schema.DescribeFieldResult fieldDescribe) , return String.
+ * 9.  setRecordType(SObject obj), return void.
+ * 10. convertIdFrom15To18(String Id), return String.
+ * 11. sortMap(Map<String, Integer> oldMap), return List<String>.
+ * 12. convertHtmlToText(String htmlBody), return String. 
+ * 13. runQuery(String objName,String[] fieldNames,String condition), return List<sObject>.
+ * 14. getSobjectNameFromIdPrefix(String objId), return String.
+ * 15. getSobjectIdPrefix(SObject obj), return String.
+ * 16. getChildQueryRelationShipName(String childObj, String parentObj), return String.
+ * 17. getRelationshipNames(String obj), return Set<String> . //obj = parent object
  *
