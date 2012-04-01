@@ -88,6 +88,26 @@ public class ForceDotComHelper
 		return childRelationName;	
 	}
 	
+	//String objectName ='Account'; String fieldName = 'Account's field';
+	public static Boolean isLookUpField(String objectName, String fieldName)
+	{
+		Boolean result = false;
+		Map<String, Schema.sObjectType> globalDescribe = Schema.getGlobalDescribe();
+		if(globalDescribe.containsKey(objectName))
+		{
+			//Use the field describe result's getMap method to return a map that represents the relationship between all the field names (keys) and the field tokens (values) for an sObject.		    
+		    Map<String, Schema.SObjectField> fieldMap = globalDescribe.get(objectName).getDescribe().fields.getMap();
+	        Schema.sObjectField field = fieldMap.get(fieldName);
+	        Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+			if(fieldDescribe.getType() == Schema.DisplayType.Reference)   // look up field
+			{
+				system.debug('**'+String.valueof(fieldDescribe.getReferenceTo()));
+				result = true;
+			} 
+		}
+		return result;
+	}
+
 	//  Returns the name of the relationship.
 	public static Set<String> getRelationshipNames(String obj) //obj = parent object
 	{
