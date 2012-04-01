@@ -33,7 +33,7 @@ public class ForceDotComHelper
    	}
 
 	// Gets the sObject describe result for the current object
-	public static void describeObject(String objectName)
+	public static Map<String, Schema.DescribeFieldResult> describeObject(String objectName)
     {
         Map<String, Schema.DescribeFieldResult> fieldDescribeMap = new Map<String, Schema.DescribeFieldResult>();
 		//Use the Schema getGlobalDescribe method to return a map that represents the relationship between all sObject names (keys) to sObject tokens (values)
@@ -49,6 +49,7 @@ public class ForceDotComHelper
                 fieldDescribeMap.put(fieldName, fieldDescribe); 
             }
         }
+		return fieldDescribeMap;
     }
 
 	//  Gets all child objects name
